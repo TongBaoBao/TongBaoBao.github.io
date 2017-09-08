@@ -14,9 +14,6 @@ module.exports = {
     publicPath: '/dist/',
     filename: '[name].js'
   },
-  externals: {
-    'AMap': 'AMap'
-  },
   resolveLoader: {
     moduleExtensions: ['-loader']
   },
@@ -96,10 +93,6 @@ module.exports = {
         target: 'http://localhost:8000/'
       }
     }
-  },
-  devtool: '#eval-source-map',
-  externals: {
-    'AMap': 'AMap'
   }
 }
 

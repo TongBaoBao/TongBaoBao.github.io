@@ -4,11 +4,11 @@
     <a class="pure-menu-heading" @click="goHomepage()">智能花盆</a>
     <ul class="pure-menu-list">
       <li class="pure-menu-item">
-      <a class="pure-menu-link" @click="goHomepage()">首页</a>
+        <a class="pure-menu-link" @click="goHomepage()">首页</a>
       </li>
       <li class="pure-menu-item"><router-link to="/waterpage"  class="pure-menu-link">浇水控制</router-link></li>
       <li class="pure-menu-item"><router-link to="/planpage"  class="pure-menu-link">培养计划</router-link></li>
-      <li class="pure-menu-item"><router-link to="#"  class="pure-menu-link"><span class="alert"></span></router-link></li>
+      <li class="pure-menu-item"><router-link to="/warnpage"  class="pure-menu-link"><span class="alert"></span></router-link></li>
     </ul>
   </div>
 
@@ -25,14 +25,36 @@
 </template>
 
 <script>
+  import {mapState, mapActions} from 'vuex'
+  import { get,unset}  from './assets/cookieUtil.js'
   export default {
     name: 'app',
     data(){
       return {
       }
     },
-    methods:{
-      goHomepage:function(){
+    computed: mapState(['waterCtrType']),
+    created(){
+      this.$store.dispatch('getPlan');
+      this.$store.dispatch('getWaterCtrType');
+   //    if (get('waterCtrType')) {
+   //      this.$store.dispatch('setWaterCtrType',get('waterCtrType'));
+   //    };
+   //    if (get('humPlan')) {
+   //     this.$store.dispatch('setHumPlan',get('humPlan'));
+   //   };
+   //   if (get('illPlan')) {
+   //    this.$store.dispatch('setIllPlan',get('illPlan'));
+   //  };
+   //  if (get('tpmPlan')) {
+   //    this.$store.dispatch('setTpmPlan',get('tpmPlan'));
+   //  };
+   //  if (get('plant')) {
+   //   this.$store.dispatch('setPlant',get('plant'));
+   // };
+ },
+ methods:{
+  goHomepage:function(){
         //跳转到主页页面必须刷新一次
         this.$router.push({path:'/'})
         window.location.reload();

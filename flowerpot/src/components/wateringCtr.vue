@@ -6,17 +6,13 @@
       <p>
         {{waterType[type]}}
       </p>
+      <div class="waterButton">
+        <p>浇水开关</p>
+        <div v-bind:class="buttonLeft" @click="waterOn()"></div>
+        <div v-bind:class="buttonRight" @click="waterOff()"></div>
+      </div>
     </div>
-  </div>
- <!--  <div class="pure-u-1 pure-u-md-1-2">
-    <div class="l-box">
-      <h3 class="information-head">自动浇水</h3>
-      <p>
-        Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-    </div>
-  </div> -->
+  </div> 
   <div class="l-content">
     <div class="pricing-tables pure-g">
       <div class="pure-u-1 pure-u-md-1-3">
@@ -93,6 +89,8 @@
 </template>
 
 <script>
+  import {mapState, mapActions} from 'vuex'
+  import { get,unset}  from '../assets/cookieUtil.js'
   export default {
     name: 'wateringCtr',
     data(){
@@ -103,13 +101,50 @@
           '2':"自动浇水",
           '3':"未设置浇水方式"
         },
-        type:'3'
+        type:'3',
+        buttonLeft:"button-left",
+        buttonRight:"button-right-active"
       }
+    },
+    computed: mapState(['waterCtrType']),
+    created(){
+      if (this.waterCtrType != undefined) {
+        this.type = this.waterCtrType
+      };
     },
     methods:{
       watering:function(value){
         this.$toast('设置成功');
-        this.type = value
+        this.type = value;
+        this.$store.dispatch('setWaterCtrType',value)
+        console.log(value)
+      },
+      waterOn:function(){
+        var _self = this;
+        var api = new OneNetApi('N0gT8l3CJq3=33JGETmy0khYrq0=');
+        api.sendCommand(9970922, 'motor_on').done(function(data){
+          console.log('api调用完成，服务器返回data为：', data);
+          if (data.errno == '0') {
+            _self.buttonLeft = "button-left-active";
+            _self.buttonRight = "button-right";
+          } else {
+            _self.$toast(data.error);
+            _self.buttonLeft = "button-left";
+          }
+        });
+      },
+      waterOff:function(){
+        var _self = this;
+        var api = new OneNetApi('N0gT8l3CJq3=33JGETmy0khYrq0=');
+        api.sendCommand(9970922, 'motor_off').done(function(data){
+          console.log('api调用完成，服务器返回data为：', data);
+          if (data.errno == '0') {
+            _self.buttonLeft = "button-left";
+            _self.buttonRight = "button-right-active";
+          } else {
+            _self.$toast(data.error);
+          } 
+        });
       }
     }
   }
@@ -123,5 +158,45 @@
     letter-spacing: 2px;
     line-height: 30px;
     padding: 10px 20px;
+  }
+  .waterButton{
+    position: absolute;
+    right: 30px;
+    top: 70px;
+  }
+  .waterButton p {
+    padding: 0;
+    margin: 0;
+    letter-spacing: 5px;
+    width: 120px;
+    text-align: center;
+  }
+  .button-left{
+    display: inline-block;
+    height: 60px;
+    width: 56px;
+    background: url(../assets/button-left.png) no-repeat;
+    background-size:100% 100%;
+  }
+  .button-left-active,.button-left:hover{
+    display: inline-block;
+    height: 60px;
+    width: 56px;
+    background:url(../assets/button-left-active.png) no-repeat;
+    background-size:100% 100%;
+  }
+  .button-right{
+    display: inline-block;
+    height: 60px;
+    width: 56px;
+    background: url(../assets/button-right.png) no-repeat;
+    background-size:100% 100%;
+  }
+  .button-right-active,.button-right:hover{
+    display: inline-block;
+    height: 60px;
+    width: 56px;
+    background:url(../assets/button-right-active.png) no-repeat;
+    background-size:100% 100%;
   }
 </style>
